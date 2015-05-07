@@ -1,0 +1,12 @@
+extends layout
+
+block content
+	div(class="navbar navbar-default navbar-fixed-top top-navbar")
+		div(class="container app-container")
+			div(class="navbar-header")
+				div(class="navbar-brand") 7 Minute Workout
+				ul(class="nav navbar-nav navbar-right")
+					li: a(ng-click="showWorkoutHistory()", title="Workout History") History
+		div(class="container body-content app-container")
+			div(ng-view)
+	

@@ -1,0 +1,18 @@
+div(class="panel panel-info", ng-controller="workoutVideoCtrl")
+	div(class="panel-heading")
+		h3(class="panel-title") Videos
+	div(class="panel-body")
+		div(class="row")
+			div(class="col-md-12")
+				div(ng-repeat="video in currentExercise.details.related.videos", ng-click="playVideo(video)", class="row video-image")
+					div(class="col-md-12")
+						div(id="play-video-overlay")
+							span(class="glyphicon glyphicon-play-circle video absolute-center")
+						img(height="220", ng-src="https://i.ytimg.com/vi/{{video}}/hqdefault.jpg")
+script(type="text/ng-template", id="youtube-modal")
+	div(class="modal-header")
+		h3(class="modal-title") Workout Video
+	div(class="modal-body")
+		iframe(width="100%", hegiht="480", src="{{video}}", frameborder="0", allowfullscreen=true)
+	div(class="modal-footer")
+		button(class="button button-primary", ng-click="ok()") OK

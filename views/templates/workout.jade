@@ -1,0 +1,26 @@
+div(class="row workout-app-container", tabindex="1", ng-keypress="onKeyPressed($event)")
+	div(id="description-panel", class="col-md-2")
+		ng-include(src="'description-panel.jade'")
+	div(id="exercise-pane", class="col-md-6")
+		div(id="pause-overlay", ng-click="pauseResumeToggle()")
+			span(class="glyphicon glyphicon-pause absolute-center", 
+ng-class="{'glyphicon-pause': !workoutPaused, 'glyphicon-play':workoutPaused}")
+		span(ng-controller="workoutAudioCtrl")
+			audio(media-player="ticksAudio", src="content/tick10s.mp3")
+			audio(media-player="nextUpAudio", src="content/nextup.mp3")
+			audio(media-player="nextUpExerciseAudio", playlist="exercisesAudio")
+			audio(media-player="halfWayAudio", src="content/15seconds.wav")
+			audio(media-player="aboutToCompleteAudio", src="content/321.wav")
+		div(class="row workout-content")
+			div(class="workout-display-div")
+				h4 Workout Remaining - {{workoutTimeRemaining | secondsToTime}}
+				h1 {{currentExercise.details.title}}
+				img(class="img-responsive", ng-src="{{currentExercise.details.image}}")
+				div(class="progress time-progress")
+					div(class="progress-bar", role="progressbar", aria-valuenow="0", 
+aira-valuemin="0", aira-value-max="{{currentExercise.duration}}", 
+ng-style="{'width':(currentExerciseDuration/currentExercise.duration)*100 + '%'}")
+			h3(class="col-md-6") Time Remaining: <strong>{{currentExercise.duration-currentExerciseDuration}}</strong>
+			h3(class="col-md-6 text-right", ng-if="currentExercise.details.name=='rest'") coming Next: {{workoutPlan.exercises[currentExerciseIndex + 1].details.title}}
+	div(id="video-panel", class="col-md-4") 
+		ng-include(src="'video-panel.jade'")

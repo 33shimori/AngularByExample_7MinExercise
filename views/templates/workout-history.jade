@@ -1,0 +1,39 @@
+div(class="modal-header")
+	h3(class="modal-title") Workout Video
+div(class="modal-body")
+	div(class="row")
+		label
+		| Filter Workouts:
+		div(class="btn-group")
+			lable
+				input(type="radio", name="searchFilter", ng-model="search.completed", value="")
+				| All
+			lable
+				input(type="radio", name="searchFilter", ng-model="search.completed", value="true")
+				| Completed
+			lable
+				input(type="radio", name="searchFilter", ng-model="search.completed", value="false")
+				| Incomplete
+			
+	div(class="row table-responsive")
+		table(class="table")
+			thead
+				tr
+					th No
+					th Started
+					th Ended
+					th Last Exercise
+					th Exercises Done
+					th Completed
+			tbody
+				tr(ng-repeat="historyItem in history | filter:search | orderBy: '-startedOn'")
+					td{{$index+1}}
+					td{{historyItem.startedOn | date:'short'}}
+					td{{historyItem.endedOn | date:'short'}}
+					td{{historyItem.lastExercise}}
+					td{{historyItem.exercisesDone}}
+					td{{historyItem.completed? "Yes" : "No"}}
+				tr(ng-if="history.length==0", class="warning")
+					td(colspan="6") No Workout History Found.
+div(class="modal-footer")
+	button(class="btn btn-primary", ng-click='ok()') OK
