@@ -15,7 +15,8 @@ ng-class="{'glyphicon-pause': !workoutPaused, 'glyphicon-play':workoutPaused}")
 			div(class="workout-display-div")
 				h4 Workout Remaining - {{workoutTimeRemaining | secondsToTime}}
 				h1 {{currentExercise.details.title}}
-				img(class="img-responsive", ng-src="{{currentExercise.details.image}}")
+				div(owl-carousel="carousel", options="carouselOptions", source="exerciseImages", on-update="imageUpdated(currentItemIndex)")
+					img(class="img-responsive", ng-src="{{image}}", ng-repeat="image in exerciseImages track by $index")
 				div(class="progress time-progress")
 					div(class="progress-bar", role="progressbar", aria-valuenow="0", 
 aira-valuemin="0", aira-value-max="{{currentExercise.duration}}", 

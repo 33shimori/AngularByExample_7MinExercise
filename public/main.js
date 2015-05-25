@@ -240,6 +240,40 @@ angular.module('main')
 
 
 angular.module('main')
+				.directive('owlCarousel', function ($compile, $timeout){
+					var owl = null;
+	return{
+		scope: { options: '=', source: '=', onUpdate: '&'},
+		link: function (scope, element, attr){
+			var defaultOptions = { 
+				singleItem: true, 
+				pagenation: false,
+				afterAction: function() {
+			var itemIndex = this.currentItem;
+			scope.$evalAsync(function(){
+				scope.onUpdate({ currentItemIndex: itemIndex });
+			})
+		}
+			};
+			if (scope.options)
+				angular.extend(defaultOptions, scope.options);
+			scope.$watch("source", function(newValue){
+				if(newValue){
+					$timeout(function (){
+						owl = element.owlCarousel(defaultOptions);
+					}, 0);
+				}
+			});
+		},
+		controller:function ($scope, $attrs){
+			if($attrs.owlCarousel) $scope.$parent[$attrs.owlCarousel]= this;
+			this.next = function () { owl.trigger('owl.next');};
+		this.previous = function () { owl.trigger('owl.prev');};
+		}
+	}
+})
+
+angular.module('main')
 				.filter('secondsToTime', function(){
 					return function (input){
 						var sec = parseInt(input,10);
@@ -284,6 +318,14 @@ angular.module('main')
 				
 	var exerciseIntervalPromise;			
 	var restExercise;
+	var fillImages = function (){
+		$scope.exerciseImages = [];
+		angular.forEach($scope.workoutPlan.exercises, function (exercise, index){
+			$scope.exerciseImages.push(exercise.details.image);
+			if(index < $scope.workoutPlan.exercises.length - 1)
+				$scope.exerciseImages.push("images/rest.png");
+		});
+	}
 	var startWorkout = function(){
 		$scope.workoutPlan = createWorkoutSvc;
 		$scope.workoutTimeRemaining = $scope.workoutPlan.totalWorkoutDuration();
@@ -301,6 +343,7 @@ angular.module('main')
 
 		workoutHistorySvc.startTracking();
 		$scope.currentExerciseIndex= -1;
+		fillImages();
 		startExercise($scope.workoutPlan.exercises[0]);		
 	};
 	var startExercise = function (exercisePlan) {
@@ -322,6 +365,7 @@ angular.module('main')
 						promise.then(function () {
 			var next = getNextExercise($scope.currentExercise, $scope, restExercise);
 			if(next) {
+				$scope.carousel.next();
 					startExercise(next, $scope);
 				} else {
 					workoutComplete();
@@ -364,6 +408,9 @@ angular.module('main')
 		if(event.which == 80 || event.which ==112)  // 'p' or 'P'
 			{$scope.pauseResumeToggle();
 		}
+	};
+	$scope.imageUpdated = function (imageIndex){
+		console.log($scope.exerciseImages[imageIndex]);
 	};
 
 	var init = function (){

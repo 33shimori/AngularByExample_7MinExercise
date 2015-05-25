@@ -4,6 +4,14 @@ angular.module('main')
 				
 	var exerciseIntervalPromise;			
 	var restExercise;
+	var fillImages = function (){
+		$scope.exerciseImages = [];
+		angular.forEach($scope.workoutPlan.exercises, function (exercise, index){
+			$scope.exerciseImages.push(exercise.details.image);
+			if(index < $scope.workoutPlan.exercises.length - 1)
+				$scope.exerciseImages.push("images/rest.png");
+		});
+	}
 	var startWorkout = function(){
 		$scope.workoutPlan = createWorkoutSvc;
 		$scope.workoutTimeRemaining = $scope.workoutPlan.totalWorkoutDuration();
@@ -21,6 +29,7 @@ angular.module('main')
 
 		workoutHistorySvc.startTracking();
 		$scope.currentExerciseIndex= -1;
+		fillImages();
 		startExercise($scope.workoutPlan.exercises[0]);		
 	};
 	var startExercise = function (exercisePlan) {
@@ -42,6 +51,7 @@ angular.module('main')
 						promise.then(function () {
 			var next = getNextExercise($scope.currentExercise, $scope, restExercise);
 			if(next) {
+				$scope.carousel.next();
 					startExercise(next, $scope);
 				} else {
 					workoutComplete();
@@ -84,6 +94,9 @@ angular.module('main')
 		if(event.which == 80 || event.which ==112)  // 'p' or 'P'
 			{$scope.pauseResumeToggle();
 		}
+	};
+	$scope.imageUpdated = function (imageIndex){
+		console.log($scope.exerciseImages[imageIndex]);
 	};
 
 	var init = function (){
